@@ -1,2 +1,2 @@
-# react-chat-app
-react chat app using Firebase for the backend
+# react-message-app
+react message app using Firebase for message storage
