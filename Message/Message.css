@@ -1,0 +1,58 @@
+.message {
+    position: relative;
+    padding: 10px 20px 10px 20px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, .05);
+    text-align: left;
+    line-height: 1.7;
+    width: 75%;
+}
+@media (max-width: 600px) {
+ .message {
+    width: 88%;
+ }
+}
+.message:nth-child(even) {
+    background-color: rgba(0, 0, 0, .025);
+}
+.message__author {
+    font-weight: 600;
+    margin-right: 10px;
+    color: rgba(0, 0, 0, 1);
+}
+.align-right-text {
+    float: right;
+}
+.material-icons.red600 { 
+    color: #c90000; 
+}
+.ImgMarginTop {
+    display: inline-flex;
+    vertical-align: middle;
+}
+.imgButton {
+    cursor:pointer;
+}
+.saveButton {
+    font-size: 36px;
+}
+.mainMessageText {
+    font-size: 16px;
+}
+.message__input {
+    width: 100%;
+    padding: 0px 5px;
+    border-radius: 5px 0 0 5px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    outline: 0;
+    font-size: 16px;
+}
+.message__input:focus {
+    background-color: white;
+}
+.iconPadding {
+    padding-left:10px;
+    padding-right:18px;
+}
