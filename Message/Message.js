@@ -6,7 +6,7 @@ export default class Message extends Component {
     this.state = {
       edit: false,
       message: this.props.message,
-      updatedMsg: "" //when click edit message, save the message here
+      updatedMsg: "" //when editing the message
     };
     this.ToggleEdit = this.ToggleEdit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -34,7 +34,7 @@ export default class Message extends Component {
     }
   }
 
-  //update seleted message in firebase db
+  //update seleted message in firebase
   updateTheMessage(index, newMsg) {
     //only allow to update messages created by the logged in user
     if (this.props.userName === this.props.message.userName) {
@@ -43,23 +43,23 @@ export default class Message extends Component {
     }
   }
 
-  //callback to update a reference to the props value with the new message
+  //callback to update the message in the list in Form
   onUpdateMessage(index, newMsg) {
     var updatedMessage = this.props.message;
     updatedMessage.message = newMsg;
 
     this.props.onUpdateMessage(updatedMessage);
 
-    //toggle the edit input field to show the plain text again
+    //toggle the edit input field to show the plain text
     this.ToggleEdit();
   }
 
-  //callback to delete the message in the list in parent(Form)
+  //callback to delete the message in the list in Form
   onDeleteMessage = value => {
     this.props.onDeleteMessage(value);
   };
 
-  //update the message in state when editing the message
+  //update the message in state while editing the message
   handleChange({ target }) {
     this.setState({
       updatedMsg: target.value
