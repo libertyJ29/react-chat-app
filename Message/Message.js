@@ -20,7 +20,7 @@ export default class Message extends Component {
       this.setState({
         //toggle showing the input
         edit: !edit,
-        updatedMsg: this.props.message.message //when showing input, update the current message for this element in state
+        updatedMsg: this.props.message.message //when showing input dialog, update the current message for this element in state
       });
     }
   }
