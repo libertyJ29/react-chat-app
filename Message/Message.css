@@ -21,15 +21,16 @@
     margin-right: 10px;
     color: rgba(0, 0, 0, 1);
 }
-.align-right-text {
+.alignTextRight {
     float: right;
 }
 .material-icons.red600 { 
     color: #c90000; 
 }
-.ImgMarginTop {
+.editMessageContainer {
     display: inline-flex;
     vertical-align: middle;
+    width: 85%;
 }
 .imgButton {
     cursor:pointer;
@@ -43,7 +44,7 @@
 .message__input {
     width: 100%;
     padding: 0px 5px;
-    border-radius: 5px 0 0 5px;
+    border-radius: 5px 5px 5px 5px;
     border: 1px solid #ddd;
     box-sizing: border-box;
     outline: 0;

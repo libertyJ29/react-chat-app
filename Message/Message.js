@@ -75,7 +75,7 @@ export default class Message extends Component {
           <span className="mainMessageText">{this.props.message.message}</span>
         )}
         {edit && (
-          <span className="ImgMarginTop">
+          <span className="editMessageContainer">
             <input
               type="text"
               className="message__input"
@@ -97,7 +97,7 @@ export default class Message extends Component {
             </i>
           </span>
         )}{" "}
-        <i className="align-right-text">
+        <i className="alignTextRight">
           {this.props.message.date} {this.props.message.time}{" "}
           <i
             className="material-icons md-24 imgButton iconPadding"

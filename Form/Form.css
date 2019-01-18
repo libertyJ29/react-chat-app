@@ -17,7 +17,8 @@
 }
 .form__button {
     padding: 16px 25px 16px 20px;
-    margin-top:20px;
+    margin-top:10px;
+    margin-bottom:20px;
     background-color: #000;
     color: #fff;
     border: 0;

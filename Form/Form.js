@@ -20,6 +20,10 @@ export default class Form extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.user) {
       this.setState({ userName: nextProps.user.displayName });
+      this.getMessagesFromFirebase();
+    }else{
+      this.setState({ userName: null });
+      this.clearMessagesList();
     }
   }
 
@@ -27,24 +31,27 @@ export default class Form extends Component {
     this.setState({ newInputMessage: event.target.value });
   }
 
+  //add new message
   handleSend() {
     if (this.state.newInputMessage) {
-      var MyDate = new Date();
 
+      //always get date using timezone GMT+0
+      var timezone = 0;
+      var MyDate = new Date( new Date().getTime() + timezone * 3600 * 1000); //.toUTCString().replace( / GMT$/, "" )
+
+      //format current date with leading 0s
       var MyDateString =
-        MyDate.getDate() +
-        "/" +
-        (MyDate.getMonth() + 1) +
-        "/" +
+        ('0' + MyDate.getDate()).slice(-2) + '/' +
+        ('0' + (MyDate.getMonth() + 1)).slice(-2) + '/' +
         MyDate.getFullYear();
 
-      //format current time with leading 0
+      //format current time with leading 0s
       var MyTimeString =
-        ("0" + MyDate.getHours()).slice(-2) +
+        ("0" + MyDate.getUTCHours()).slice(-2) +
         ":" +
-        ("0" + MyDate.getMinutes()).slice(-2) +
+        ("0" + MyDate.getUTCMinutes()).slice(-2) +
         ":" +
-        ("0" + MyDate.getSeconds()).slice(-2);
+        ("0" + MyDate.getUTCSeconds()).slice(-2);
 
       var newItem = {
         userName: this.state.userName,
@@ -54,6 +61,7 @@ export default class Form extends Component {
       };
       this.messageRef.push(newItem);
       this.setState({ newInputMessage: "" }); //clear message in input box
+
     }
   }
 
@@ -62,13 +70,24 @@ export default class Form extends Component {
     this.handleSend();
   }
 
-  componentWillMount() {
-    this.messageRef.limitToLast(100).on("value", message => {
+  //clear the list of messages, when user is logged out
+  clearMessagesList(){
+    let newList = [];
+
+    this.setState({
+      list: newList
+    });
+  }
+
+  //get the messages from firebase, when user is logged in
+  getMessagesFromFirebase() {
+    this.messageRef.limitToLast(50).on("value", message => {
       const showList = message.val();
       let newList = [];
+
       for (let showId in showList) {
         newList.push({
-          id: showId, //get the message unique id from the firebase object
+          id: showId, //save the message unique id from the firebase object
           message: showList[showId].message,
           userName: showList[showId].userName,
           date: showList[showId].date,
@@ -77,14 +96,26 @@ export default class Form extends Component {
         });
       }
 
+      //sort the returned message array in reverse order based on the date and time
+      newList.sort(function compare(a,b){
+
+        var dateA = a.date.split('/').reverse().join("-");
+        var dateTimeA = new Date(dateA+"T"+a.time+"Z");
+
+        var dateB = b.date.split('/').reverse().join("-");
+        var dateTimeB = new Date(dateB+"T"+b.time+"Z");
+
+        return dateTimeB - dateTimeA;
+      });
+
       this.setState({
         list: newList
       });
-      //console.log('list', JSON.stringify(newList))
+
     });
   }
 
-  //receive the updated message value back from child(Message)
+  //receive the updated message from child component(Message)
   onUpdateMessage = message => {
     //update message in firebase
     this.messageRef.child(message.id).update({ message: message.message });
@@ -99,12 +130,12 @@ export default class Form extends Component {
     this.setState({ list: newList });
   };
 
-  //receive the deleted message from child(Message) to be deleted from list
+  //receive the deleted message from child component(Message) to be deleted from list
   onDeleteMessage = message => {
     //delete message in firebase
     this.messageRef.child(message.id).remove();
 
-    //filter out the message to delete from state list
+    //filter out the message to delete from list in state
     const newList = this.state.list.filter(i => i.id !== message.id);
 
     this.setState({ list: newList });
@@ -113,6 +144,21 @@ export default class Form extends Component {
   render() {
     return (
       <div className="form">
+        {this.state.userName ? (
+          <div className="form__row">
+            <input
+              className="form__input"
+              type="text"
+              placeholder="Type message"
+              value={this.state.newInputMessage}
+              onChange={this.handleChange.bind(this)}
+              onKeyPress={this.handleKeyPress.bind(this)}
+            />
+            <button className="form__button" onClick={this.handleSend.bind(this)}>
+              Send
+            </button>
+          </div>
+        ) : null}
         <div className="form__message">
           {this.state.list.map((item, index) => (
             <Message
@@ -123,21 +169,8 @@ export default class Form extends Component {
               onDeleteMessage={this.onDeleteMessage}
             />
           ))}
-        </div>
-        <div className="form__row">
-          <input
-            className="form__input"
-            type="text"
-            placeholder="Type message"
-            value={this.state.newInputMessage}
-            onChange={this.handleChange.bind(this)}
-            onKeyPress={this.handleKeyPress.bind(this)}
-          />
-          <button className="form__button" onClick={this.handleSend.bind(this)}>
-            Send
-          </button>
-        </div>
       </div>
+    </div>
     );
   }
 }

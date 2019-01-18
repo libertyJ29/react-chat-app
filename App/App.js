@@ -12,18 +12,23 @@ class App extends Component {
       user: null
     };
   }
+
   componentDidMount() {
     firebase.auth().onAuthStateChanged(user => {
       this.setState({ user });
     });
   }
+
   handleSignIn() {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider);
   }
+
   handleLogOut() {
     firebase.auth().signOut();
+    this.setState({ user: null });
   }
+
   render() {
     return (
       <div className="app">
